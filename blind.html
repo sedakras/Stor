@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline'">
+<title>Stor</title>
+<style>
+  html,body{margin:0;height:100%;overflow:hidden;background:transparent;user-select:none;-webkit-user-select:none}
+  body{display:flex;flex-direction:column;--c:#2e3a36;--solid:65%;--cp:0px}
+  #cas{flex:none;height:14px;position:relative;z-index:3;background:linear-gradient(180deg,#f6f6f4,#d3d5d3 60%,#a8aba9);box-shadow:0 2px 4px #0005}
+  #fabric{flex:1;position:relative;margin:0 6px;overflow:hidden;background:var(--c)}
+  #fabric::after{content:"";position:absolute;inset:0;pointer-events:none;
+    background:linear-gradient(90deg,#00000030,transparent 3%,transparent 97%,#00000030),linear-gradient(180deg,#00000038,transparent 60px)}
+  #bar{flex:none;height:16px;position:relative;z-index:3;cursor:ns-resize;border-radius:0 0 4px 4px;
+    background:linear-gradient(180deg,#eff1f0,#c2c6c4 50%,#8f9391);box-shadow:inset 0 1px 0 #fff9,inset 0 -1px 0 #0003}
+  #bar::after{content:"";position:absolute;left:50%;top:4px;width:64px;height:8px;transform:translateX(-50%);border-radius:4px;
+    background:linear-gradient(180deg,#9da19f,#c9cdcb);box-shadow:inset 0 1px 2px #0005}
+  #chain{position:absolute;right:48px;top:14px;width:18px;height:min(300px,calc(100% - 46px));z-index:2;cursor:pointer}
+  #chain .beads{position:absolute;left:6px;top:0;bottom:22px;width:5px;
+    background:radial-gradient(circle,#ececea 0 2px,#9a9c99 2.1px 2.5px,transparent 2.6px) 0 var(--cp)/5px 7px repeat-y}
+  #chain .beads.back{left:auto;right:-4px;bottom:90px;opacity:.85}
+  #charm{position:absolute;left:1px;bottom:0;width:16px;height:22px;transform-origin:50% -60px}
+  .c-wood{border-radius:50%;background:radial-gradient(circle at 35% 30%,#d9a874,#8b5a2b);height:16px!important}
+  .c-brass{border-radius:50%;background:radial-gradient(circle at 35% 30%,#fff2b8,#c99a2e 55%,#7d5b12);height:16px!important}
+  .c-tassel{width:12px!important;left:3px!important;height:28px!important;border-radius:3px 3px 1px 1px;
+    background:linear-gradient(90deg,#b23a3a 0 1px,#d4524f 1px 2px) 0 7px/2px 100% repeat-x;box-shadow:inset 0 7px 0 #8f2626}
+  .c-nazar{border-radius:50%;height:17px!important;width:17px!important;left:0!important;
+    background:radial-gradient(circle,#111 0 2px,#7fd0f0 2.1px 4px,#fff 4.1px 5.6px,#1c47b8 5.7px)}
+  .c-drop{border-radius:50% 50% 50% 50%/60% 60% 40% 40%;background:radial-gradient(circle at 40% 35%,#fff,#9cc9c0 45%,#3f7f73)}
+  .c-cube{width:14px!important;height:14px!important;background:linear-gradient(135deg,#f4f2ee,#c9c6bf 60%,#9d9a93);box-shadow:inset 1px 1px 0 #fff8,inset -3px -2px 4px #0002}
+  .c-none{display:none}
+
+  /* kumaşlar */
+  .f-blackout #fabric{background:linear-gradient(90deg,#ffffff08,transparent 30%,#ffffff06 60%,transparent),var(--c)}
+  .f-zebra #fabric{background:repeating-linear-gradient(180deg,var(--c) 0 var(--solid),color-mix(in srgb,var(--c) 30%,transparent) var(--solid) 100%) 0 0/100% 84px}
+  .f-linen #fabric{background:
+    repeating-linear-gradient(0deg,#ffffff10 0 1px,transparent 1px 3px),
+    repeating-linear-gradient(90deg,#0000000e 0 1px,transparent 1px 2px,#ffffff0a 2px 3px),
+    repeating-linear-gradient(90deg,transparent 0 37px,#0000000c 37px 39px,transparent 39px 83px),var(--c)}
+  .f-screen #fabric{background:
+    repeating-linear-gradient(0deg,color-mix(in srgb,var(--c) 92%,transparent) 0 1.4px,transparent 1.4px 3.4px),
+    repeating-linear-gradient(90deg,color-mix(in srgb,var(--c) 92%,transparent) 0 1.4px,transparent 1.4px 3.4px),
+    color-mix(in srgb,var(--c) 60%,transparent)}
+  .f-voile #fabric{background:repeating-linear-gradient(90deg,#ffffff18 0 2px,transparent 2px 11px),color-mix(in srgb,var(--c) 45%,transparent)}
+  .f-bamboo #fabric{background:
+    repeating-linear-gradient(180deg,#0000 0 8px,#0000004d 8px 9px,#0000 9px 9.5px),
+    repeating-linear-gradient(180deg,#ffffff12 0 17px,#0000 17px 29px,#0000001a 29px 38px),
+    repeating-linear-gradient(90deg,#0000 0 31%,#3b2a17 31% 31.3%,#0000 31.3% 68%,#3b2a17 68% 68.3%,#0000 68.3%),var(--c)}
+  .f-iznik #fabric{background:
+    radial-gradient(circle at 50% 50%,#c0392b 0 9%,transparent 10%) 0 0/120px 120px,
+    radial-gradient(circle at 50% 50%,transparent 0 22%,var(--c) 23% 27%,transparent 28%) 0 0/120px 120px,
+    radial-gradient(circle at 0 0,var(--c) 0 16%,transparent 17%) 0 0/120px 120px,
+    radial-gradient(circle at 100% 100%,var(--c) 0 16%,transparent 17%) 0 0/120px 120px,
+    radial-gradient(circle at 50% 50%,#2a9d8f 0 4%,transparent 5%) 60px 60px/120px 120px,#f7f3ea}
+  .f-stripe #fabric{background:repeating-linear-gradient(90deg,var(--c) 0 60px,#f6f1e6 60px 120px,var(--c) 120px 128px,#f6f1e6 128px 146px)}
+  .f-washi #fabric{background:
+    radial-gradient(ellipse 30px 2px at 20% 30%,#0000001a,transparent) 0 0/160px 120px,
+    radial-gradient(ellipse 44px 1.5px at 70% 60%,#00000014,transparent) 0 0/190px 150px,
+    radial-gradient(ellipse 24px 1px at 40% 80%,#00000018,transparent) 0 0/120px 90px,
+    repeating-linear-gradient(180deg,transparent 0 160px,#ffffff50 160px 162px),
+    color-mix(in srgb,var(--c) 80%,transparent)}
+  .f-velvet #fabric{background:
+    linear-gradient(90deg,#00000040,#ffffff1c 18%,#00000030 36%,#ffffff14 55%,#0000003a 75%,#ffffff12 90%,#00000040),var(--c)}
+</style>
+</head>
+<body class="f-blackout">
+  <div id="cas"></div>
+  <div id="fabric"></div>
+  <div id="bar" title="Sürükle: storu indir ya da kaldır"></div>
+  <div id="chain" title="Çek: storu indir ya da kaldır"><span class="beads"></span><span class="beads back"></span><span id="charm" class="c-wood"></span></div>
+<script>
+  const body = document.body, bar = document.getElementById('bar'), chain = document.getElementById('chain'), charm = document.getElementById('charm');
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  window.stor.onState(s => {
+    body.className = 'f-' + s.fabric;
+    body.style.setProperty('--c', s.color);
+    body.style.setProperty('--solid', s.gap + '%');
+    charm.className = 'c-' + s.charm;
+  });
+  window.stor.onDrop(d => {
+    body.style.setProperty('--cp', (d * 700).toFixed(1) + 'px');
+  });
+  function swing() {
+    if (reduce || !charm.animate) return;
+    charm.animate([{transform:'rotate(0)'},{transform:'rotate(12deg)'},{transform:'rotate(-8deg)'},{transform:'rotate(4deg)'},{transform:'rotate(0)'}],
+      {duration:1300, easing:'ease-out'});
+  }
+  window.stor.onSwing(swing);
+
+  let dragging = false, queued = false;
+  bar.addEventListener('pointerdown', async e => {
+    if (e.button !== 0) return;
+    const pid = e.pointerId;
+    try { bar.setPointerCapture(pid); } catch (_) {}
+    const ok = await window.stor.dragStart();
+    if (!ok) { try { bar.releasePointerCapture(pid); } catch (_) {} return; }
+    dragging = true;
+  });
+  bar.addEventListener('pointermove', () => {
+    if (!dragging || queued) return;
+    queued = true;
+    requestAnimationFrame(() => { queued = false; if (dragging) window.stor.drag(); });
+  });
+  const end = () => { if (!dragging) return; dragging = false; window.stor.dragEnd(); swing(); };
+  bar.addEventListener('pointerup', end);
+  bar.addEventListener('pointercancel', end);
+  bar.addEventListener('lostpointercapture', end);
+  chain.addEventListener('click', () => { swing(); window.stor.chain(); });
+</script>
+</body>
+</html>
